@@ -273,7 +273,7 @@ login.addEventListener("click", async () => {
   if (error) {
     console.error(error.message);
     todoContainer.style.color = "rgb(180, 33, 33)";
-    todoContainer.innerHTML = error.message;
+    todoContainer.innerHTML = error.message.replace("phone", "password");
     email.value = "";
     password.value = "";
   } else {
@@ -328,5 +328,8 @@ signup.addEventListener("click", async () => {
   } else {
     todoContainer.style.color = "black";
     console.log("Signed up: ", data.user?.email);
+    email.value = "";
+    password.value = "";
+    todoContainer.innerHTML = "Signed up sucessfully, please log in";
   }
 });
