@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/c440c8f4c8.js"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <title>Todo Typescript</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="title">To Do <span>skly</span></h1>
+
+      <div style="display: none" class="input-container">
+        <input class="todo-title" type="text" placeholder="Write Todo..." />
+        <button class="add-todo">+</button>
+      </div>
+      <hr />
+      <div class="login-container">
+        <input class="email" type="email" placeholder="Email..." />
+        <input class="password" type="password" placeholder="Password..." />
+        <div class="login-buttons">
+          <button class="login">Log in</button>
+          <button class="signup">Sign up</button>
+        </div>
+      </div>
+      <div class="todo-container">
+        <ul class="todo-list"></ul>
+      </div>
+      <hr />
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
