@@ -2,6 +2,7 @@ import "./style.css";
 import { v4 as uuid } from "uuid";
 import { supabase } from "./supabaseClient";
 
+//Type for Todo
 interface Todo {
   id: string;
   user_id?: string;
@@ -11,6 +12,10 @@ interface Todo {
 }
 
 //Supabase
+interface SupabaseResponse<T> {
+  data: T | null;
+  error: Error | null;
+}
 
 //Usable global variables
 const input = document.querySelector(".todo-title") as HTMLInputElement | null;
@@ -80,11 +85,13 @@ async function addTodo(): Promise<void> {
 
   todos.push({ id: uuid(), user_id: user?.id, title: title, completed: false });
 
-  const { error } = await supabase.from("todo-table").insert({
-    ...todos[todos.length - 1],
-    user_id: user?.id,
-    user_email: user?.email,
-  });
+  const { error }: SupabaseResponse<Todo[]> = await supabase
+    .from("todo-table")
+    .insert({
+      ...todos[todos.length - 1],
+      user_id: user?.id,
+      user_email: user?.email,
+    });
   if (error) {
     console.log("error no workie");
   }
@@ -95,6 +102,7 @@ async function addTodo(): Promise<void> {
 }
 
 //Checks the todo array to and generates the list in HTML.
+
 async function renderTodos(arr: Todo[]): Promise<void> {
   if (todos.length < 1) clearBtn.remove();
   todoContainer.innerHTML = "";
@@ -162,7 +170,7 @@ async function toggleDone(e: Event): Promise<void> {
   let changeDoneItem = todos.find((el) => el.id === target.id);
   if (changeDoneItem) {
     changeDoneItem.completed = !changeDoneItem.completed;
-    const { error } = await supabase
+    const { error }: SupabaseResponse<Todo[]> = await supabase
       .from("todo-table")
       .update({ completed: changeDoneItem.completed })
       .eq("id", target.id);
@@ -223,7 +231,7 @@ function startEditTodo(active: HTMLDivElement): void {
       liElement.innerHTML = textValue;
       liElement.style.background = "white";
 
-      const { error } = await supabase
+      const { error }: SupabaseResponse<Todo[]> = await supabase
         .from("todo-table")
         .update({ title: textValue })
         .eq("id", liElement.id);
@@ -271,8 +279,13 @@ login.addEventListener("click", async () => {
   });
 
   if (error) {
-    console.error(error.message);
+    console.log(error);
     todoContainer.style.color = "rgb(180, 33, 33)";
+    if (error.message === "Invalid login credentials") {
+      todoContainer.innerHTML =
+        "No log in credentials found, make sure to sign up first";
+      return;
+    }
     todoContainer.innerHTML = error.message.replace("phone", "password");
     email.value = "";
     password.value = "";
@@ -284,7 +297,7 @@ login.addEventListener("click", async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    const { data } = await supabase
+    const { data }: SupabaseResponse<Todo[]> = await supabase
       .from("todo-table")
       .select("*")
       .eq("user_id", user?.id);
